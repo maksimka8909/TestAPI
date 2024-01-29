@@ -1,19 +1,30 @@
-﻿namespace TestAPI.Domain.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace TestAPI.Domain.Models;
 
 public class Client : BaseModel
 {
-    public string Inn { get; set; }
+    public string TaxpayerNumber { get; set; }
 
     public string Name { get; set; }
 
-    public ClientType Type { get; set; }
+    public string TypeCode { get; protected set; }
+
+    [NotMapped]
+    public ClientType Type { 
+        get => Enum.Parse<ClientType>(TypeCode);  
+        set => TypeCode = value.ToString(); }
 
     public List<Founder> Founders { get; set; } = new List<Founder>();
 
-    public Client(string inn, string name, ClientType type)
+    public Client(string taxpayerNumber, string name, ClientType type)
     {
-        Inn = inn;
+        TaxpayerNumber = taxpayerNumber;
         Name = name;
         Type = type;
+    }
+
+    protected Client()
+    {
     }
 }

@@ -2,15 +2,19 @@
 
 public class Founder : BaseModel
 {
-    public string Inn { get; set; }
+    public string TaxpayerNumber { get; set; }
 
-    public string Fio { get; set; }
+    public string Fullname { get; set; }
 
     public List<Client> Clients { get; set; } = new List<Client>();
 
-    public Founder(string inn, string fio)
+    public Founder(string taxpayerNumber, string fullname)
     {
-        Inn = inn;
-        Fio = fio;
+        TaxpayerNumber = taxpayerNumber;
+        Fullname = fullname;
+    }
+
+    protected Founder()
+    {
     }
 }

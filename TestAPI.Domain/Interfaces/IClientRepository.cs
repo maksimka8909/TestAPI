@@ -2,8 +2,9 @@
 
 namespace TestAPI.Domain.Interfaces;
 
-public interface IClientRepository : ICommonRepository<Client>, IPersonRepository<Client>
+public interface IClientRepository : IGenericRepository<Client>
 {
-    public Task AddFounder(int clientId, int founderId);
-    public Task RemoveFounder(int clientId, int founderId);
+    public Task AddFounder(int clientId, Founder founder);
+    public Task RemoveFounder(int clientId, Founder founder);
+    public Task<Client> GetUserByTaxpayerNumber(string number);
 }

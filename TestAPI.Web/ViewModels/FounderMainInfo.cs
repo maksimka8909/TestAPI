@@ -5,10 +5,10 @@ namespace TestAPI.ViewModels;
 public class FounderMainInfo
 {
     public int Id { get; }
-    
-    public string Inn { get; set; }
 
-    public string Fio { get; set; }
+    public string TaxpayerNumber { get; set; }
+
+    public string Fullname { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
@@ -17,8 +17,8 @@ public class FounderMainInfo
     public FounderMainInfo(Founder founder)
     {
         Id = founder.Id;
-        Inn = founder.Inn;
-        Fio = founder.Fio;
+        TaxpayerNumber = founder.TaxpayerNumber;
+        Fullname = founder.Fullname;
         CreatedAt = founder.CreatedAt;
         UpdatedAt = founder.UpdatedAt;
     }

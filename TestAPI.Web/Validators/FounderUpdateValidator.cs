@@ -11,7 +11,7 @@ public class FounderUpdateValidator : AbstractValidator<FounderUpdate>
             .NotNull()
             .NotEmpty()
             .WithMessage("ID не заполнено");
-        RuleFor(f => f.Fio)
+        RuleFor(f => f.Fullname)
             .MaximumLength(255)
             .MinimumLength(1)
             .NotNull()

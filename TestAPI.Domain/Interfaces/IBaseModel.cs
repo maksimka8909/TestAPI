@@ -1,8 +1,6 @@
-﻿using TestAPI.Domain.Interfaces;
+﻿namespace TestAPI.Domain.Interfaces;
 
-namespace TestAPI.Domain.Models;
-
-public abstract class BaseModel : IBaseModel
+public interface IBaseModel
 {
     public int Id { get; }
 
@@ -11,8 +9,4 @@ public abstract class BaseModel : IBaseModel
     public DateTime? UpdatedAt { get; set; }
 
     public DateTime? DeletedAt { get; set; }
-
-    protected BaseModel()
-    {
-    }
 }

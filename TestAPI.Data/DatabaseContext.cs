@@ -4,13 +4,13 @@ using TestAPI.Domain.Models;
 
 namespace TestAPI.Data;
 
-public sealed class ApiContext : DbContext
+public sealed class DatabaseContext : DbContext
 {
     public DbSet<Founder> Founders { get; set; }
 
     public DbSet<Client> Clients { get; set; }
 
-    public ApiContext(DbContextOptions<ApiContext> options) : base(options)
+    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
         Database.EnsureCreated();
     }

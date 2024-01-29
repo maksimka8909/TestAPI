@@ -12,11 +12,11 @@ public class ClientUseCase : IClientRepository
         _clientRepository = clientRepository;
     }
 
-    public async Task Add(Client item) => 
+    public async Task Add(Client item) =>
         await _clientRepository.Add(item);
 
-    public async Task Update(Client item) =>
-        await _clientRepository.Update(item);
+    public void Update(Client item) =>
+        _clientRepository.Update(item);
 
     public async Task Delete(int id) =>
         await _clientRepository.Delete(id);
@@ -27,14 +27,12 @@ public class ClientUseCase : IClientRepository
     public async Task<Client> Get(int id) =>
         await _clientRepository.Get(id);
 
-    public async Task AddFounder(int clientId, int founderId) =>
-        await _clientRepository.AddFounder(clientId, founderId);
+    public async Task AddFounder(int clientId, Founder founder) =>
+        await _clientRepository.AddFounder(clientId, founder);
 
-    public async Task RemoveFounder(int clientId, int founderId) =>
-        await _clientRepository.RemoveFounder(clientId, founderId);
+    public async Task RemoveFounder(int clientId, Founder founder) =>
+        await _clientRepository.RemoveFounder(clientId, founder);
 
-    public async Task<Client> GetUserByTaxpayerNumber(string number)=>
+    public async Task<Client> GetUserByTaxpayerNumber(string number) =>
         await _clientRepository.GetUserByTaxpayerNumber(number);
-
-    
 }

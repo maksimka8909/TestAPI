@@ -1,4 +1,5 @@
 ﻿using TestAPI.Data.Repositories;
+using TestAPI.Domain.Interfaces;
 using TestAPI.Domain.Models;
 using TestAPI.Domain.UseCases;
 using TestAPI.Validators;
@@ -9,17 +10,17 @@ namespace TestAPI.Services;
 public class FounderService
 {
     private readonly FounderUseCase _founderUseCase;
-    private readonly CommonRepository _commonRepository;
     private readonly FounderCreateValidator _createValidator;
     private readonly FounderUpdateValidator _updateValidator;
+    private readonly ISaveRepository _saveRepository;
 
-    public FounderService(FounderUseCase founderUseCase, CommonRepository commonRepository,
-        FounderCreateValidator createValidator, FounderUpdateValidator updateValidator)
+    public FounderService(FounderUseCase founderUseCase,
+        FounderCreateValidator createValidator, FounderUpdateValidator updateValidator, ISaveRepository saveRepository)
     {
         _founderUseCase = founderUseCase;
-        _commonRepository = commonRepository;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _saveRepository = saveRepository;
     }
 
     public async Task<IReadOnlyList<Message>> Add(FounderCreateInfo founderCreateInfo)
@@ -27,12 +28,12 @@ public class FounderService
         var result = _createValidator.Validate(founderCreateInfo);
         if (result.IsValid)
         {
-            var founder = await _founderUseCase.GetUserByTaxpayerNumber(founderCreateInfo.Inn);
+            var founder = await _founderUseCase.GetUserByTaxpayerNumber(founderCreateInfo.TaxpayerNumber);
             if (founder != null)
                 return new List<Message>() { new Message("Клиент с таким ИНН уже есть") };
 
-            await _founderUseCase.Add(new Founder(founderCreateInfo.Inn, founderCreateInfo.Fio));
-            await _commonRepository.Save();
+            await _founderUseCase.Add(new Founder(founderCreateInfo.TaxpayerNumber, founderCreateInfo.Fullname));
+            await _saveRepository.Save();
             return new List<Message>() { new Message("Клиент успешно создан") };
         }
         else
@@ -53,9 +54,9 @@ public class FounderService
         if (result.IsValid)
         {
             var f = await _founderUseCase.Get(founder.Id);
-            f.Fio = founder.Fio;
-            await _founderUseCase.Update(f);
-            await _commonRepository.Save();
+            f.Fullname = founder.Fullname;
+            _founderUseCase.Update(f);
+            await _saveRepository.Save();
             return new List<Message>() { new Message("Клиент успешно создан") };
         }
         else
@@ -73,7 +74,7 @@ public class FounderService
     public async Task Delete(int id)
     {
         await _founderUseCase.Delete(id);
-        await _commonRepository.Save();
+        await _saveRepository.Save();
     }
 
     public async Task<IReadOnlyList<FounderMainInfo>> GetAll()

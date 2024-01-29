@@ -1,5 +1,7 @@
-﻿using TestAPI.Data.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using TestAPI.Data.Repositories;
 using TestAPI.Domain.Interfaces;
+using TestAPI.Domain.Models;
 using TestAPI.Domain.UseCases;
 using TestAPI.Services;
 using TestAPI.Validators;
@@ -11,10 +13,13 @@ public static class ServiceExtension
     public static IServiceCollection AddMyService(this IServiceCollection serviceCollection)
     {
         //репозитории
+        serviceCollection.AddTransient<ISaveRepository, SaveRepository>();
         serviceCollection.AddTransient<IClientRepository, ClientRepository>();
         serviceCollection.AddTransient<IFounderRepository, FounderRepository>();
-        serviceCollection.AddTransient<CommonRepository>();
+        
 
+        
+        
         //валидаторы
         serviceCollection.AddTransient<ClientCreateValidator>();
         serviceCollection.AddTransient<ClientUpdateValidator>();
@@ -28,8 +33,9 @@ public static class ServiceExtension
         //сервисы
         serviceCollection.AddTransient<ClientService>();
         serviceCollection.AddTransient<FounderService>();
-
-
+        
+       
+        
         return serviceCollection;
     }
 }

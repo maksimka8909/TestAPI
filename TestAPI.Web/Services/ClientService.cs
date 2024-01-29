@@ -1,4 +1,5 @@
 ﻿using TestAPI.Data.Repositories;
+using TestAPI.Domain.Interfaces;
 using TestAPI.Domain.Models;
 using TestAPI.Domain.UseCases;
 using TestAPI.Validators;
@@ -9,17 +10,20 @@ namespace TestAPI.Services;
 public class ClientService
 {
     private readonly ClientUseCase _clientUseCase;
-    private readonly CommonRepository _commonRepository;
+    private readonly FounderUseCase _founderUseCase;
+    private readonly ISaveRepository _saveRepository;
     private readonly ClientCreateValidator _createValidator;
     private readonly ClientUpdateValidator _updateValidator;
 
-    public ClientService(ClientUseCase clientUseCase, CommonRepository commonRepository,
-        ClientCreateValidator createValidator, ClientUpdateValidator updateValidator)
+    public ClientService(ClientUseCase clientUseCase,
+        ClientCreateValidator createValidator, ClientUpdateValidator updateValidator,
+        FounderUseCase founderUseCase, ISaveRepository saveRepository)
     {
         _clientUseCase = clientUseCase;
-        _commonRepository = commonRepository;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _founderUseCase = founderUseCase;
+        _saveRepository = saveRepository;
     }
 
     public async Task<IReadOnlyList<Message>> Add(ClientCreateInfo clientCreate)
@@ -27,12 +31,12 @@ public class ClientService
         var result = _createValidator.Validate(clientCreate);
         if (result.IsValid)
         {
-            var client = await _clientUseCase.GetUserByTaxpayerNumber(clientCreate.Inn);
+            var client = await _clientUseCase.GetUserByTaxpayerNumber(clientCreate.TaxpayerNumber);
             if (client != null)
                 return new List<Message>() { new Message("Клиент с таким ИНН уже есть") };
-            var clientType = clientCreate.Inn.Length == 12 ? ClientType.Individual : ClientType.Legal;
-            await _clientUseCase.Add(new Client(clientCreate.Inn, clientCreate.Name, clientType));
-            await _commonRepository.Save();
+            var clientType = clientCreate.TaxpayerNumber.Length == 12 ? ClientType.Individual : ClientType.Legal;
+            await _clientUseCase.Add(new Client(clientCreate.TaxpayerNumber, clientCreate.Name, clientType));
+            await _saveRepository.Save();
             return new List<Message>() { new Message("Клиент успешно создан") };
         }
         else
@@ -54,8 +58,8 @@ public class ClientService
         {
             var c = await _clientUseCase.Get(client.Id);
             c.Name = client.Name;
-            await _clientUseCase.Update(c);
-            await _commonRepository.Save();
+            _clientUseCase.Update(c);
+            await _saveRepository.Save();
             return new List<Message>() { new Message("Клиент успешно создан") };
         }
         else
@@ -73,7 +77,7 @@ public class ClientService
     public async Task Delete(int id)
     {
         await _clientUseCase.Delete(id);
-        await _commonRepository.Save();
+        await _saveRepository.Save();
     }
 
     public async Task<IReadOnlyList<ClientMainInfo>> GetAll()
@@ -91,13 +95,15 @@ public class ClientService
 
     public async Task AddFounder(int clientId, int founderId)
     {
-        await _clientUseCase.AddFounder(clientId, founderId);
-        await _commonRepository.Save();
+        var founder = await _founderUseCase.Get(founderId);
+        await _clientUseCase.AddFounder(clientId, founder);
+        await _saveRepository.Save();
     }
 
     public async Task RemoveFounder(int clientId, int founderId)
     {
-        await _clientUseCase.RemoveFounder(clientId, founderId);
-        await _commonRepository.Save();
+        var founder = await _founderUseCase.Get(founderId);
+        await _clientUseCase.RemoveFounder(clientId, founder);
+        await _saveRepository.Save();
     }
 }

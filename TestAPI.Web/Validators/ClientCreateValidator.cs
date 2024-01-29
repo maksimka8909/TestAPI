@@ -7,13 +7,11 @@ public class ClientCreateValidator : AbstractValidator<ClientCreateInfo>
 {
     public ClientCreateValidator()
     {
-        RuleFor(c => c.Inn)
+        RuleFor(c => c.TaxpayerNumber)
             .Must(c => c.All(Char.IsDigit))
-            .MinimumLength(10)
-            .MaximumLength(12)
             .NotNull()
             .NotEmpty()
-            .Must(c => c.Length != 11)
+            .Must(c => c.Length is 10 or 12)
             .WithMessage("ИНН введен некорректно ");
         RuleFor(c => c.Name)
             .MaximumLength(255)
@@ -21,6 +19,5 @@ public class ClientCreateValidator : AbstractValidator<ClientCreateInfo>
             .NotNull()
             .NotEmpty()
             .WithMessage("Имя введено некорректно");
-
     }
 }
