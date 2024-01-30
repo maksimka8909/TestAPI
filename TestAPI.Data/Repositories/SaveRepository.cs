@@ -11,5 +11,5 @@ public class SaveRepository : ISaveRepository
         _database = database;
     }
 
-    public async Task Save() => _database.SaveChangesAsync();
+    public async Task Save() => await _database.SaveChangesAsync();
 }

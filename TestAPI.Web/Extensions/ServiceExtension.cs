@@ -16,10 +16,8 @@ public static class ServiceExtension
         serviceCollection.AddTransient<ISaveRepository, SaveRepository>();
         serviceCollection.AddTransient<IClientRepository, ClientRepository>();
         serviceCollection.AddTransient<IFounderRepository, FounderRepository>();
-        
+        serviceCollection.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
-        
-        
         //валидаторы
         serviceCollection.AddTransient<ClientCreateValidator>();
         serviceCollection.AddTransient<ClientUpdateValidator>();
@@ -33,9 +31,8 @@ public static class ServiceExtension
         //сервисы
         serviceCollection.AddTransient<ClientService>();
         serviceCollection.AddTransient<FounderService>();
-        
-       
-        
+
+
         return serviceCollection;
     }
 }

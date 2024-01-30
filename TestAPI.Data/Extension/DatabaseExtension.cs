@@ -19,7 +19,7 @@ public static class DatabaseExtension
         modelBuilder.Entity<Client>().Property(c => c.Name).HasMaxLength(255).IsRequired();
         modelBuilder.Entity<Client>().HasIndex(c => c.TaxpayerNumber).IsUnique();
         modelBuilder.Entity<Client>().Property(c => c.TaxpayerNumber).HasMaxLength(12).IsRequired();
-        modelBuilder.Entity<Client>().Property(c => c.CreatedAt).HasDefaultValue(DateTime.Now);
+        modelBuilder.Entity<Client>().Property(c => c.CreatedAt).HasDefaultValueSql("NULL");
         modelBuilder.Entity<Client>().Property(c => c.UpdatedAt).HasDefaultValueSql("NULL");
         modelBuilder.Entity<Client>().Property(c => c.DeletedAt).HasDefaultValueSql("NULL");
     }
@@ -32,16 +32,10 @@ public static class DatabaseExtension
         modelBuilder.Entity<Founder>().Property(f => f.Fullname).HasMaxLength(255).IsRequired();
         modelBuilder.Entity<Founder>().HasIndex(f => f.TaxpayerNumber).IsUnique();
         modelBuilder.Entity<Founder>().Property(f => f.TaxpayerNumber).HasMaxLength(12).IsRequired();
-        modelBuilder.Entity<Founder>().Property(f => f.CreatedAt).HasDefaultValue(DateTime.Now);
+        modelBuilder.Entity<Founder>().Property(f => f.CreatedAt).HasDefaultValueSql("NULL");
         modelBuilder.Entity<Founder>().Property(f => f.UpdatedAt).HasDefaultValueSql("NULL");
         modelBuilder.Entity<Founder>().Property(f => f.DeletedAt).HasDefaultValueSql("NULL");
     }
 
-    public static IServiceCollection AddDataBaseConnection(this IServiceCollection serviceCollection,
-        IConfiguration configuration)
-    {
-        serviceCollection.AddDbContext<DatabaseContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-        return serviceCollection;
-    }
+    
 }

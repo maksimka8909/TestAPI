@@ -2,7 +2,7 @@
 
 namespace TestAPI.Domain.Interfaces;
 
-public interface IFounderRepository : IGenericRepository<Founder>
+public interface IFounderRepository 
 {
-    public Task<Founder> GetUserByTaxpayerNumber(string number);
+    public Task<Founder?> GetUserByTaxpayerNumber(string number);
 }

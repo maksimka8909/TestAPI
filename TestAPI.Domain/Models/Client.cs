@@ -8,7 +8,7 @@ public class Client : BaseModel
 
     public string Name { get; set; }
 
-    public string TypeCode { get; protected set; }
+    public string TypeCode { get; set; }
 
     [NotMapped]
     public ClientType Type { 
@@ -22,6 +22,7 @@ public class Client : BaseModel
         TaxpayerNumber = taxpayerNumber;
         Name = name;
         Type = type;
+        CreatedAt = DateTime.Now;
     }
 
     protected Client()

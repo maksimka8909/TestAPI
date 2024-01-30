@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using TestAPI.Data;
 using TestAPI.Data.Extension;
 using TestAPI.Extensions;
 
@@ -10,7 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDataBaseConnection(builder.Configuration);
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddMyService();
 

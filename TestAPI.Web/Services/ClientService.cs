@@ -28,7 +28,7 @@ public class ClientService
 
     public async Task<IReadOnlyList<Message>> Add(ClientCreateInfo clientCreate)
     {
-        var result = _createValidator.Validate(clientCreate);
+        var result = await _createValidator.ValidateAsync(clientCreate);
         if (result.IsValid)
         {
             var client = await _clientUseCase.GetUserByTaxpayerNumber(clientCreate.TaxpayerNumber);
@@ -56,11 +56,11 @@ public class ClientService
         var result = _updateValidator.Validate(client);
         if (result.IsValid)
         {
-            var c = await _clientUseCase.Get(client.Id);
-            c.Name = client.Name;
-            _clientUseCase.Update(c);
+            var currentClient = await _clientUseCase.Get(client.Id);
+            currentClient.Name = client.Name;
+            currentClient.UpdatedAt = DateTime.Now;
             await _saveRepository.Save();
-            return new List<Message>() { new Message("Клиент успешно создан") };
+            return new List<Message>() { new Message("Клиент успешно изменен") };
         }
         else
         {
@@ -76,7 +76,8 @@ public class ClientService
 
     public async Task Delete(int id)
     {
-        await _clientUseCase.Delete(id);
+        var client = await _clientUseCase.Get(id);
+        client.DeletedAt = DateTime.Now;
         await _saveRepository.Save();
     }
 
@@ -96,14 +97,16 @@ public class ClientService
     public async Task AddFounder(int clientId, int founderId)
     {
         var founder = await _founderUseCase.Get(founderId);
-        await _clientUseCase.AddFounder(clientId, founder);
+        var client = await _clientUseCase.Get(clientId);
+        _clientUseCase.AddFounder(client, founder);
         await _saveRepository.Save();
     }
 
     public async Task RemoveFounder(int clientId, int founderId)
     {
         var founder = await _founderUseCase.Get(founderId);
-        await _clientUseCase.RemoveFounder(clientId, founder);
+        var client = await _clientUseCase.Get(clientId);
+        _clientUseCase.RemoveFounder(client, founder);
         await _saveRepository.Save();
     }
 }

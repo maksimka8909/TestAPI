@@ -53,11 +53,11 @@ public class FounderService
         var result = _updateValidator.Validate(founder);
         if (result.IsValid)
         {
-            var f = await _founderUseCase.Get(founder.Id);
-            f.Fullname = founder.Fullname;
-            _founderUseCase.Update(f);
+            var currentFounder = await _founderUseCase.Get(founder.Id);
+            currentFounder.Fullname = founder.Fullname;
+            currentFounder.UpdatedAt = DateTime.Now;
             await _saveRepository.Save();
-            return new List<Message>() { new Message("Клиент успешно создан") };
+            return new List<Message>() { new Message("Клиент успешно обновлен") };
         }
         else
         {
@@ -73,7 +73,8 @@ public class FounderService
 
     public async Task Delete(int id)
     {
-        await _founderUseCase.Delete(id);
+        var founder = await _founderUseCase.Get(id);
+        founder.DeletedAt = DateTime.Now;
         await _saveRepository.Save();
     }
 

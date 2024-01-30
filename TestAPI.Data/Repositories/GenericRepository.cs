@@ -1,38 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestAPI.Domain.Interfaces;
-using TestAPI.Domain.Models;
 
 namespace TestAPI.Data.Repositories;
 
-public abstract class GenericRepository<TModel> : IGenericRepository<TModel>
-   where TModel : class, IBaseModel
+public class GenericRepository<T> : IGenericRepository<T>
+    where T : class, IBaseModel
 {
-    private readonly DatabaseContext _database;
-    protected readonly DbSet<TModel> _dbSet;
+    protected readonly DbSet<T> _dbSet;
 
-    protected GenericRepository(DatabaseContext database)
+    public GenericRepository(DatabaseContext context)
     {
-        _database = database;
-        _dbSet = database.Set<TModel>();
+        _dbSet = context.Set<T>();
     }
 
-    public async Task Add(TModel item) =>
+    public async Task Add(T item) =>
         await _dbSet.AddAsync(item);
 
-    public void Update(TModel item)
-    {
-        item.UpdatedAt = DateTime.Now;
-    }
-
-    public async Task Delete(int id)
-    {
-        var model = await _dbSet.FindAsync(id);
-        model.DeletedAt = DateTime.Now;
-    }
-
-    public async Task<IReadOnlyList<TModel>> GetAll() =>
+    public async Task<IReadOnlyList<T>> GetAll()=>
         await _dbSet.Where(c => c.DeletedAt == null).ToListAsync();
 
-    public async Task<TModel> Get(int id) =>
+    public async Task<T> Get(int id) =>
         await _dbSet.Where(f => f.DeletedAt == null && f.Id == id).FirstOrDefaultAsync();
 }

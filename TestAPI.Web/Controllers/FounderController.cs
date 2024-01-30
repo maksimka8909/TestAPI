@@ -6,7 +6,7 @@ using TestAPI.ViewModels;
 namespace TestAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/founders")]
 public class FounderController
 {
     private readonly FounderService _founderService;
@@ -16,11 +16,11 @@ public class FounderController
         _founderService = founderService;
     }
 
-    [HttpGet("getall")]
+    [HttpGet]
     public async Task<IReadOnlyList<FounderMainInfo>> Get() =>
         await _founderService.GetAll();
 
-    [HttpGet("get/{id}")]
+    [HttpGet("{id}")]
     public async Task<FounderMainInfo> Get(int id) =>
         await _founderService.Get(id);
 
@@ -28,11 +28,11 @@ public class FounderController
     public async Task Remove(int id) =>
         await _founderService.Delete(id);
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IReadOnlyList<Message>> Create(FounderCreateInfo founderCreateInfo) =>
         await _founderService.Add(founderCreateInfo);
 
-    [HttpPut("update")]
+    [HttpPut]
     public async Task<IReadOnlyList<Message>> Update(FounderUpdate founderUpdate) =>
         await _founderService.Update(founderUpdate);
 }

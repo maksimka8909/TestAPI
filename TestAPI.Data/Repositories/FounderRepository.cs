@@ -6,10 +6,10 @@ namespace TestAPI.Data.Repositories;
 
 public class FounderRepository : GenericRepository<Founder>, IFounderRepository
 {
-    public FounderRepository(DatabaseContext database) : base(database)
+    public FounderRepository(DatabaseContext context) : base(context)
     {
     }
 
-    public async Task<Founder> GetUserByTaxpayerNumber(string number) =>
+    public async Task<Founder?> GetUserByTaxpayerNumber(string number) =>
         await _dbSet.Where(f => f.TaxpayerNumber == number).FirstOrDefaultAsync();
 }

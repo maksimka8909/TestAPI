@@ -6,7 +6,7 @@ using TestAPI.ViewModels;
 namespace TestAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/clients")]
 public class ClientController
 {
     private readonly ClientService _clientService;
@@ -20,7 +20,7 @@ public class ClientController
     public async Task<IReadOnlyList<ClientMainInfo>> Get() =>
         await _clientService.GetAll();
 
-    [HttpGet("/{id}")]
+    [HttpGet("{id}")]
     public async Task<ClientMainInfo> Get(int id) =>
         await _clientService.Get(id);
 
@@ -28,19 +28,19 @@ public class ClientController
     public async Task Remove(int id) =>
         await _clientService.Delete(id);
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IReadOnlyList<Message>> Create(ClientCreateInfo clientCreateInfo) =>
         await _clientService.Add(clientCreateInfo);
 
-    [HttpPut("update")]
+    [HttpPut]
     public async Task<IReadOnlyList<Message>> Update(ClientUpdate clientUpdate) =>
         await _clientService.Update(clientUpdate);
 
-    [HttpPost("AddFounder")]
+    [HttpPost("addFounder")]
     public async Task AddFounder(int idClient, int idFounder) =>
         await _clientService.AddFounder(idClient, idFounder);
 
-    [HttpDelete("RemoveFounder")]
+    [HttpDelete("removeFounder")]
     public async Task RemoveFounder(int idClient, int idFounder) =>
         await _clientService.RemoveFounder(idClient, idFounder);
 }
