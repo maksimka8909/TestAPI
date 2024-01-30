@@ -41,13 +41,7 @@ public class ClientService
         }
         else
         {
-            List<Message> errors = new List<Message>();
-            foreach (var error in result.Errors)
-            {
-                errors.Add(new Message(error.ErrorMessage));
-            }
-
-            return errors;
+            return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
         }
     }
 
@@ -64,26 +58,21 @@ public class ClientService
         }
         else
         {
-            List<Message> errors = new List<Message>();
-            foreach (var error in result.Errors)
-            {
-                errors.Add(new Message(error.ErrorMessage));
-            }
-
-            return errors;
+            return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
         }
     }
 
-    public async Task Delete(int id)
+    public async Task<IReadOnlyList<Message>> Delete(int id)
     {
         var client = await _clientUseCase.Get(id);
         client.DeletedAt = DateTime.Now;
         await _saveRepository.Save();
+        return new List<Message>() { new Message("Клиент удален") };
     }
 
     public async Task<IReadOnlyList<ClientMainInfo>> GetAll()
     {
-        var clients = await _clientUseCase.GetAll();
+        IReadOnlyList<Client?> clients = await _clientUseCase.GetAll();
         var viewClients = clients.Select(x => new ClientMainInfo(x)).ToArray();
         return viewClients;
     }
@@ -94,19 +83,21 @@ public class ClientService
         return new ClientMainInfo(client);
     }
 
-    public async Task AddFounder(int clientId, int founderId)
+    public async Task<IReadOnlyList<Message>> AddFounder(int clientId, int founderId)
     {
         var founder = await _founderUseCase.Get(founderId);
         var client = await _clientUseCase.Get(clientId);
         _clientUseCase.AddFounder(client, founder);
         await _saveRepository.Save();
+        return new List<Message>() { new Message("Учредитель добавлен") };
     }
 
-    public async Task RemoveFounder(int clientId, int founderId)
+    public async Task<IReadOnlyList<Message>> RemoveFounder(int clientId, int founderId)
     {
         var founder = await _founderUseCase.Get(founderId);
         var client = await _clientUseCase.Get(clientId);
-        _clientUseCase.RemoveFounder(client, founder);
+        await _clientUseCase.RemoveFounder(client, founder);
         await _saveRepository.Save();
+        return new List<Message>() { new Message("Учредитель удален") };
     }
 }

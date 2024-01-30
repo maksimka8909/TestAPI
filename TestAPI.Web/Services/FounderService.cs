@@ -30,21 +30,15 @@ public class FounderService
         {
             var founder = await _founderUseCase.GetUserByTaxpayerNumber(founderCreateInfo.TaxpayerNumber);
             if (founder != null)
-                return new List<Message>() { new Message("Клиент с таким ИНН уже есть") };
+                return new List<Message>() { new Message("Учредитель с таким ИНН уже есть") };
 
             await _founderUseCase.Add(new Founder(founderCreateInfo.TaxpayerNumber, founderCreateInfo.Fullname));
             await _saveRepository.Save();
-            return new List<Message>() { new Message("Клиент успешно создан") };
+            return new List<Message>() { new Message("Учредитель успешно создан") };
         }
         else
         {
-            List<Message> errors = new List<Message>();
-            foreach (var error in result.Errors)
-            {
-                errors.Add(new Message(error.ErrorMessage));
-            }
-
-            return errors;
+            return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
         }
     }
 
@@ -57,30 +51,25 @@ public class FounderService
             currentFounder.Fullname = founder.Fullname;
             currentFounder.UpdatedAt = DateTime.Now;
             await _saveRepository.Save();
-            return new List<Message>() { new Message("Клиент успешно обновлен") };
+            return new List<Message>() { new Message("Учредитель успешно обновлен") };
         }
         else
         {
-            List<Message> errors = new List<Message>();
-            foreach (var error in result.Errors)
-            {
-                errors.Add(new Message(error.ErrorMessage));
-            }
-
-            return errors;
+            return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
         }
     }
 
-    public async Task Delete(int id)
+    public async Task<IReadOnlyList<Message>> Delete(int id)
     {
         var founder = await _founderUseCase.Get(id);
         founder.DeletedAt = DateTime.Now;
         await _saveRepository.Save();
+        return new List<Message>() { new Message("Учредитель успешно создан") };
     }
 
     public async Task<IReadOnlyList<FounderMainInfo>> GetAll()
     {
-        var founders = await _founderUseCase.GetAll();
+        IReadOnlyList<Founder?> founders = await _founderUseCase.GetAll();
         var viewFounders = founders.Select(x => new FounderMainInfo(x)).ToArray();
         return viewFounders;
     }

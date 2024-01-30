@@ -12,21 +12,12 @@ public static class ServiceExtension
 {
     public static IServiceCollection AddMyService(this IServiceCollection serviceCollection)
     {
-        //репозитории
-        serviceCollection.AddTransient<ISaveRepository, SaveRepository>();
-        serviceCollection.AddTransient<IClientRepository, ClientRepository>();
-        serviceCollection.AddTransient<IFounderRepository, FounderRepository>();
-        serviceCollection.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
         //валидаторы
         serviceCollection.AddTransient<ClientCreateValidator>();
         serviceCollection.AddTransient<ClientUpdateValidator>();
         serviceCollection.AddTransient<FounderCreateValidator>();
         serviceCollection.AddTransient<FounderUpdateValidator>();
 
-        //юзкейсы
-        serviceCollection.AddTransient<ClientUseCase>();
-        serviceCollection.AddTransient<FounderUseCase>();
 
         //сервисы
         serviceCollection.AddTransient<ClientService>();

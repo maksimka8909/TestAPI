@@ -17,15 +17,15 @@ public class ClientController
     }
 
     [HttpGet]
-    public async Task<IReadOnlyList<ClientMainInfo>> Get() =>
+    public async Task<IReadOnlyList<ClientMainInfo>> GetClients() =>
         await _clientService.GetAll();
 
     [HttpGet("{id}")]
-    public async Task<ClientMainInfo> Get(int id) =>
+    public async Task<ClientMainInfo> GetClientById(int id) =>
         await _clientService.Get(id);
 
     [HttpDelete("remove/{id}")]
-    public async Task Remove(int id) =>
+    public async Task<IReadOnlyList<Message>> Remove(int id) =>
         await _clientService.Delete(id);
 
     [HttpPost]
@@ -37,10 +37,10 @@ public class ClientController
         await _clientService.Update(clientUpdate);
 
     [HttpPost("addFounder")]
-    public async Task AddFounder(int idClient, int idFounder) =>
+    public async Task<IReadOnlyList<Message>> AddFounder(int idClient, int idFounder) =>
         await _clientService.AddFounder(idClient, idFounder);
 
     [HttpDelete("removeFounder")]
-    public async Task RemoveFounder(int idClient, int idFounder) =>
+    public async Task<IReadOnlyList<Message>> RemoveFounder(int idClient, int idFounder) =>
         await _clientService.RemoveFounder(idClient, idFounder);
 }

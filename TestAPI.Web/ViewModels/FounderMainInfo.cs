@@ -14,7 +14,7 @@ public class FounderMainInfo
 
     public DateTime? UpdatedAt { get; set; }
 
-    public FounderMainInfo(Founder founder)
+    public FounderMainInfo(Founder? founder)
     {
         Id = founder.Id;
         TaxpayerNumber = founder.TaxpayerNumber;

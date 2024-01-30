@@ -16,9 +16,9 @@ public class GenericRepository<T> : IGenericRepository<T>
     public async Task Add(T item) =>
         await _dbSet.AddAsync(item);
 
-    public async Task<IReadOnlyList<T>> GetAll()=>
-        await _dbSet.Where(c => c.DeletedAt == null).ToListAsync();
+    public async Task<IReadOnlyList<T>> GetAll() =>
+        await _dbSet.Where(t => t.DeletedAt == null).ToListAsync();
 
-    public async Task<T> Get(int id) =>
-        await _dbSet.Where(f => f.DeletedAt == null && f.Id == id).FirstOrDefaultAsync();
+    public async Task<T?> Get(int id) =>
+        await _dbSet.Where(t => t.DeletedAt == null && t.Id == id).FirstOrDefaultAsync();
 }

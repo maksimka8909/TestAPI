@@ -10,14 +10,15 @@ public class ClientRepository : GenericRepository<Client>, IClientRepository
     {
     }
 
-    public void AddFounder(Client client, Founder founder)
+    public void AddFounder(Client? client, Founder? founder)
     {
         client.Founders.Add(founder);
     }
 
-    public void RemoveFounder(Client client, Founder founder)
+    public async Task RemoveFounder(Client? client, Founder? founder)
     {
-        client.Founders.Remove(founder);
+        var clientFullInfo = await _dbSet.Include("Founders").Where(c => c == client).FirstOrDefaultAsync();
+        clientFullInfo.Founders.Remove(founder);
     }
 
     public async Task<Client?> GetUserByTaxpayerNumber(string number) =>

@@ -18,7 +18,7 @@ public class ClientMainInfo
 
     public List<FounderMainInfo> Founders { get; set; }
 
-    public ClientMainInfo(Client client)
+    public ClientMainInfo(Client? client)
     {
         Id = client.Id;
         TaxpayerNumber = client.TaxpayerNumber;

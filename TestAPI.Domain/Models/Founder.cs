@@ -12,7 +12,6 @@ public class Founder : BaseModel
     {
         TaxpayerNumber = taxpayerNumber;
         Fullname = fullname;
-        CreatedAt = DateTime.Now;
     }
 
     protected Founder()

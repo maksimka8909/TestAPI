@@ -17,15 +17,15 @@ public class FounderController
     }
 
     [HttpGet]
-    public async Task<IReadOnlyList<FounderMainInfo>> Get() =>
+    public async Task<IReadOnlyList<FounderMainInfo>> GetFounders() =>
         await _founderService.GetAll();
 
     [HttpGet("{id}")]
-    public async Task<FounderMainInfo> Get(int id) =>
+    public async Task<FounderMainInfo> GetFounderById(int id) =>
         await _founderService.Get(id);
 
     [HttpDelete("remove/{id}")]
-    public async Task Remove(int id) =>
+    public async Task<IReadOnlyList<Message>> Remove(int id) =>
         await _founderService.Delete(id);
 
     [HttpPost]

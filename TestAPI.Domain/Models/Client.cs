@@ -11,18 +11,19 @@ public class Client : BaseModel
     public string TypeCode { get; set; }
 
     [NotMapped]
-    public ClientType Type { 
-        get => Enum.Parse<ClientType>(TypeCode);  
-        set => TypeCode = value.ToString(); }
+    public ClientType Type
+    {
+        get => Enum.Parse<ClientType>(TypeCode);
+        set => TypeCode = value.ToString();
+    }
 
-    public List<Founder> Founders { get; set; } = new List<Founder>();
+    public List<Founder?> Founders { get; set; } = new List<Founder?>();
 
     public Client(string taxpayerNumber, string name, ClientType type)
     {
         TaxpayerNumber = taxpayerNumber;
         Name = name;
         Type = type;
-        CreatedAt = DateTime.Now;
     }
 
     protected Client()
