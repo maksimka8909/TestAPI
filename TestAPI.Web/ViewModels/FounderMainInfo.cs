@@ -22,4 +22,8 @@ public class FounderMainInfo
         CreatedAt = founder.CreatedAt;
         UpdatedAt = founder.UpdatedAt;
     }
+
+    public FounderMainInfo()
+    {
+    }
 }

@@ -7,8 +7,8 @@ public class ClientUseCase : GenericUseCase<Client>
 {
     private readonly IClientRepository _clientRepository;
 
-    public ClientUseCase(IClientRepository clientRepository, IGenericRepository<Client> genericRepository)
-        : base(genericRepository)
+    public ClientUseCase(IClientRepository clientRepository)
+        : base(clientRepository)
     {
         _clientRepository = clientRepository;
     }

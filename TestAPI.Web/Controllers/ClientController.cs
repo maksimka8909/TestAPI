@@ -28,11 +28,11 @@ public class ClientController
     public async Task<IReadOnlyList<Message>> Remove(int id) =>
         await _clientService.Delete(id);
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IReadOnlyList<Message>> Create(ClientCreateInfo clientCreateInfo) =>
         await _clientService.Add(clientCreateInfo);
 
-    [HttpPut]
+    [HttpPut("update")]
     public async Task<IReadOnlyList<Message>> Update(ClientUpdate clientUpdate) =>
         await _clientService.Update(clientUpdate);
 

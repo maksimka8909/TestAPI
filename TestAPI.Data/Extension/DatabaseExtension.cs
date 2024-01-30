@@ -46,7 +46,6 @@ public static class DatabaseExtension
         serviceCollection.AddTransient<ISaveRepository, SaveRepository>();
         serviceCollection.AddTransient<IClientRepository, ClientRepository>();
         serviceCollection.AddTransient<IFounderRepository, FounderRepository>();
-        serviceCollection.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
         serviceCollection.AddTransient<ClientUseCase>();
         serviceCollection.AddTransient<FounderUseCase>();

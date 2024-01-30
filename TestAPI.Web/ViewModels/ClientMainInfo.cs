@@ -28,4 +28,8 @@ public class ClientMainInfo
         UpdatedAt = client.UpdatedAt;
         Founders = new List<FounderMainInfo>(client.Founders.Select(f => new FounderMainInfo(f)).ToArray());
     }
+
+    public ClientMainInfo()
+    {
+    }
 }

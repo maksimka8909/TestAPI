@@ -28,11 +28,11 @@ public class FounderController
     public async Task<IReadOnlyList<Message>> Remove(int id) =>
         await _founderService.Delete(id);
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IReadOnlyList<Message>> Create(FounderCreateInfo founderCreateInfo) =>
         await _founderService.Add(founderCreateInfo);
 
-    [HttpPut]
+    [HttpPut("update")]
     public async Task<IReadOnlyList<Message>> Update(FounderUpdate founderUpdate) =>
         await _founderService.Update(founderUpdate);
 }

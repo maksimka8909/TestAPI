@@ -51,6 +51,10 @@ public class ClientService
         if (result.IsValid)
         {
             var currentClient = await _clientUseCase.Get(client.Id);
+            if (currentClient == null)
+            {
+                return new List<Message>() { new Message("Клиент не найден") };
+            }
             currentClient.Name = client.Name;
             currentClient.UpdatedAt = DateTime.Now;
             await _saveRepository.Save();
@@ -65,6 +69,10 @@ public class ClientService
     public async Task<IReadOnlyList<Message>> Delete(int id)
     {
         var client = await _clientUseCase.Get(id);
+        if (client == null)
+        {
+            return new List<Message>() { new Message("Клиент не найден") };
+        }
         client.DeletedAt = DateTime.Now;
         await _saveRepository.Save();
         return new List<Message>() { new Message("Клиент удален") };
@@ -80,6 +88,10 @@ public class ClientService
     public async Task<ClientMainInfo> Get(int id)
     {
         var client = await _clientUseCase.Get(id);
+        if (client == null)
+        {
+            return new ClientMainInfo();
+        }
         return new ClientMainInfo(client);
     }
 
@@ -87,6 +99,10 @@ public class ClientService
     {
         var founder = await _founderUseCase.Get(founderId);
         var client = await _clientUseCase.Get(clientId);
+        if (client == null || founder == null)
+        {
+            return new List<Message>() { new Message("Ошибка добавления, клиент или учредитель не найден") };
+        }
         _clientUseCase.AddFounder(client, founder);
         await _saveRepository.Save();
         return new List<Message>() { new Message("Учредитель добавлен") };
@@ -96,6 +112,10 @@ public class ClientService
     {
         var founder = await _founderUseCase.Get(founderId);
         var client = await _clientUseCase.Get(clientId);
+        if (client == null || founder == null)
+        {
+            return new List<Message>() { new Message("Ошибка удаления, клиент или учредитель не найден") };
+        }
         await _clientUseCase.RemoveFounder(client, founder);
         await _saveRepository.Save();
         return new List<Message>() { new Message("Учредитель удален") };

@@ -7,8 +7,8 @@ public class FounderUseCase : GenericUseCase<Founder>
 {
     private readonly IFounderRepository _founderRepository;
 
-    public FounderUseCase(IFounderRepository founderRepository, IGenericRepository<Founder> genericRepository)
-        : base(genericRepository)
+    public FounderUseCase(IFounderRepository founderRepository)
+        : base(founderRepository)
     {
         _founderRepository = founderRepository;
     }

@@ -23,4 +23,10 @@ public class ClientRepository : GenericRepository<Client>, IClientRepository
 
     public async Task<Client?> GetUserByTaxpayerNumber(string number) =>
         await _dbSet.Where(c => c.TaxpayerNumber == number).FirstOrDefaultAsync();
+
+    public new async Task<IReadOnlyList<Client>> GetAll() =>
+        await _dbSet.Include("Founders").ToArrayAsync();
+    
+    public new async Task<Client?> Get(int id) =>
+        await _dbSet.Include("Founders").FirstOrDefaultAsync();
 }
