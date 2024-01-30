@@ -1,5 +1,4 @@
-﻿using TestAPI.Data.Repositories;
-using TestAPI.Domain.Interfaces;
+﻿using TestAPI.Domain.Interfaces;
 using TestAPI.Domain.Models;
 using TestAPI.Domain.UseCases;
 using TestAPI.Validators;
@@ -47,7 +46,7 @@ public class ClientService
 
     public async Task<IReadOnlyList<Message>> Update(ClientUpdate client)
     {
-        var result = _updateValidator.Validate(client);
+        var result = await _updateValidator.ValidateAsync(client);
         if (result.IsValid)
         {
             var currentClient = await _clientUseCase.Get(client.Id);

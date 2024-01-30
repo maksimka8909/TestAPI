@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TestAPI.Domain.Models;
 using TestAPI.Services;
 using TestAPI.ViewModels;
 

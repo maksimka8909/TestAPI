@@ -1,5 +1,4 @@
-﻿using TestAPI.Data.Repositories;
-using TestAPI.Domain.Interfaces;
+﻿using TestAPI.Domain.Interfaces;
 using TestAPI.Domain.Models;
 using TestAPI.Domain.UseCases;
 using TestAPI.Validators;
@@ -25,7 +24,7 @@ public class FounderService
 
     public async Task<IReadOnlyList<Message>> Add(FounderCreateInfo founderCreateInfo)
     {
-        var result = _createValidator.Validate(founderCreateInfo);
+        var result = await _createValidator.ValidateAsync(founderCreateInfo);
         if (result.IsValid)
         {
             var founder = await _founderUseCase.GetUserByTaxpayerNumber(founderCreateInfo.TaxpayerNumber);
@@ -44,7 +43,7 @@ public class FounderService
 
     public async Task<IReadOnlyList<Message>> Update(FounderUpdate founder)
     {
-        var result = _updateValidator.Validate(founder);
+        var result = await _updateValidator.ValidateAsync(founder);
         if (result.IsValid)
         {
             var currentFounder = await _founderUseCase.Get(founder.Id);
