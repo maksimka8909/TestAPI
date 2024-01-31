@@ -29,16 +29,14 @@ public class FounderService
         {
             var founder = await _founderUseCase.GetUserByTaxpayerNumber(founderCreateInfo.TaxpayerNumber);
             if (founder != null)
-                return new List<Message>() { new Message("Учредитель с таким ИНН уже есть") };
+                return SendMessage("Учредитель с таким ИНН уже есть");
 
             await _founderUseCase.Add(new Founder(founderCreateInfo.TaxpayerNumber, founderCreateInfo.Fullname));
             await _saveRepository.Save();
-            return new List<Message>() { new Message("Учредитель успешно создан") };
+            return SendMessage("Учредитель успешно создан");
         }
-        else
-        {
-            return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
-        }
+
+        return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
     }
 
     public async Task<IReadOnlyList<Message>> Update(FounderUpdate founder)
@@ -49,17 +47,16 @@ public class FounderService
             var currentFounder = await _founderUseCase.Get(founder.Id);
             if (currentFounder == null)
             {
-                return new List<Message>() { new Message("Учредитель не найден") };
+                return SendMessage("Учредитель не найден");
             }
+
             currentFounder.Fullname = founder.Fullname;
             currentFounder.UpdatedAt = DateTime.Now;
             await _saveRepository.Save();
-            return new List<Message>() { new Message("Учредитель успешно обновлен") };
+            return SendMessage("Учредитель успешно обновлен");
         }
-        else
-        {
-            return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
-        }
+
+        return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
     }
 
     public async Task<IReadOnlyList<Message>> Delete(int id)
@@ -67,11 +64,12 @@ public class FounderService
         var founder = await _founderUseCase.Get(id);
         if (founder == null)
         {
-            return new List<Message>() { new Message("Учредитель не найден") };
+           return SendMessage("Учредитель не найден");
         }
+
         founder.DeletedAt = DateTime.Now;
         await _saveRepository.Save();
-        return new List<Message>() { new Message("Учредитель успешно удален") };
+        return SendMessage("Учредитель успешно удален");
     }
 
     public async Task<IReadOnlyList<FounderMainInfo>> GetAll()
@@ -88,6 +86,10 @@ public class FounderService
         {
             return new FounderMainInfo();
         }
+
         return new FounderMainInfo(founder);
     }
+
+    private List<Message> SendMessage(string message) =>
+        new List<Message>() { new Message(message) };
 }

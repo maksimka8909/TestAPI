@@ -32,16 +32,14 @@ public class ClientService
         {
             var client = await _clientUseCase.GetUserByTaxpayerNumber(clientCreate.TaxpayerNumber);
             if (client != null)
-                return new List<Message>() { new Message("Клиент с таким ИНН уже есть") };
+                return SendMessage("Клиент с таким ИНН уже есть");
             var clientType = clientCreate.TaxpayerNumber.Length == 12 ? ClientType.Individual : ClientType.Legal;
             await _clientUseCase.Add(new Client(clientCreate.TaxpayerNumber, clientCreate.Name, clientType));
             await _saveRepository.Save();
-            return new List<Message>() { new Message("Клиент успешно создан") };
+            return SendMessage("Клиент успешно создан");
         }
-        else
-        {
-            return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
-        }
+
+        return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
     }
 
     public async Task<IReadOnlyList<Message>> Update(ClientUpdate client)
@@ -52,17 +50,16 @@ public class ClientService
             var currentClient = await _clientUseCase.Get(client.Id);
             if (currentClient == null)
             {
-                return new List<Message>() { new Message("Клиент не найден") };
+                return SendMessage("Клиент не найден");
             }
+
             currentClient.Name = client.Name;
             currentClient.UpdatedAt = DateTime.Now;
             await _saveRepository.Save();
-            return new List<Message>() { new Message("Клиент успешно изменен") };
+            return SendMessage("Клиент успешно изменен");
         }
-        else
-        {
-            return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
-        }
+
+        return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
     }
 
     public async Task<IReadOnlyList<Message>> Delete(int id)
@@ -70,11 +67,12 @@ public class ClientService
         var client = await _clientUseCase.Get(id);
         if (client == null)
         {
-            return new List<Message>() { new Message("Клиент не найден") };
+            return SendMessage("Клиент не найден");
         }
+
         client.DeletedAt = DateTime.Now;
         await _saveRepository.Save();
-        return new List<Message>() { new Message("Клиент удален") };
+        return SendMessage("Клиент удален");
     }
 
     public async Task<IReadOnlyList<ClientMainInfo>> GetAll()
@@ -91,6 +89,7 @@ public class ClientService
         {
             return new ClientMainInfo();
         }
+
         return new ClientMainInfo(client);
     }
 
@@ -100,11 +99,16 @@ public class ClientService
         var client = await _clientUseCase.Get(clientId);
         if (client == null || founder == null)
         {
-            return new List<Message>() { new Message("Ошибка добавления, клиент или учредитель не найден") };
+            return SendMessage("Ошибка добавления, клиент или учредитель не найден");
+        }
+
+        if (client.Type == ClientType.Individual)
+        {
+            return SendMessage("Ошибка добавления, только у юридических лиц могут быть учредители");
         }
         _clientUseCase.AddFounder(client, founder);
         await _saveRepository.Save();
-        return new List<Message>() { new Message("Учредитель добавлен") };
+        return SendMessage("Учредитель добавлен");
     }
 
     public async Task<IReadOnlyList<Message>> RemoveFounder(int clientId, int founderId)
@@ -113,10 +117,14 @@ public class ClientService
         var client = await _clientUseCase.Get(clientId);
         if (client == null || founder == null)
         {
-            return new List<Message>() { new Message("Ошибка удаления, клиент или учредитель не найден") };
+            return SendMessage("Ошибка удаления, клиент или учредитель не найден");
         }
+
         await _clientUseCase.RemoveFounder(client, founder);
         await _saveRepository.Save();
-        return new List<Message>() { new Message("Учредитель удален") };
+        return SendMessage("Учредитель удален");
     }
+
+    private List<Message> SendMessage(string message) =>
+        new List<Message>() { new Message(message) };
 }
