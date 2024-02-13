@@ -7,12 +7,11 @@ public class FounderUseCase : GenericUseCase<Founder>
 {
     private readonly IFounderRepository _founderRepository;
 
-    public FounderUseCase(IFounderRepository founderRepository)
-        : base(founderRepository)
+    public FounderUseCase(IFounderRepository founderRepository) : base(founderRepository)
     {
         _founderRepository = founderRepository;
     }
 
-    public async Task<Founder?> GetUserByTaxpayerNumber(string number) =>
-        await _founderRepository.GetUserByTaxpayerNumber(number);
+    public async Task<Founder?> GetFounderByTaxpayerNumber(string number) =>
+        await _founderRepository.GetFounderByTaxpayerNumber(number);
 }

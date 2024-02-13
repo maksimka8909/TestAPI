@@ -7,8 +7,7 @@ public class ClientUseCase : GenericUseCase<Client>
 {
     private readonly IClientRepository _clientRepository;
 
-    public ClientUseCase(IClientRepository clientRepository)
-        : base(clientRepository)
+    public ClientUseCase(IClientRepository clientRepository) : base(clientRepository)
     {
         _clientRepository = clientRepository;
     }
@@ -19,6 +18,6 @@ public class ClientUseCase : GenericUseCase<Client>
     public async Task RemoveFounder(Client client, Founder founder) =>
         await _clientRepository.RemoveFounder(client, founder);
 
-    public async Task<Client?> GetUserByTaxpayerNumber(string number) =>
-        await _clientRepository.GetUserByTaxpayerNumber(number);
+    public async Task<Client?> GetClientByTaxpayerNumber(string number) =>
+        await _clientRepository.GetClientByTaxpayerNumber(number);
 }

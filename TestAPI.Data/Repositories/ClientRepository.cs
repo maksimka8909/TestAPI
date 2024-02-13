@@ -17,16 +17,23 @@ public class ClientRepository : GenericRepository<Client>, IClientRepository
 
     public async Task RemoveFounder(Client client, Founder founder)
     {
-        var clientFullInfo = await _dbSet.Include("Founders").Where(c => c == client).FirstOrDefaultAsync();
+        var clientFullInfo = await _dbSet.Include(c => c.Founders).Where(c => c == client).FirstOrDefaultAsync();
         clientFullInfo.Founders.Remove(founder);
     }
 
-    public async Task<Client?> GetUserByTaxpayerNumber(string number) =>
+    public async Task<Client?> GetClientByTaxpayerNumber(string number) =>
         await _dbSet.FirstOrDefaultAsync(c => c.TaxpayerNumber == number);
 
-    public new async Task<IReadOnlyList<Client>> GetAll() =>
-        await _dbSet.Include("Founders").Where(c => c.DeletedAt == null).ToArrayAsync();
-    
-    public new async Task<Client?> Get(int id) =>
-        await _dbSet.Include("Founders").FirstOrDefaultAsync( c => c.DeletedAt == null && c.Id == id);
+    public async Task<IReadOnlyList<Client>> GetAll(int pageNumber, int pageSize)
+    {
+        var skipCount = (pageNumber - 1) * pageSize;
+        return await _dbSet.Include(c => c.Founders).OrderBy(t => t.Id)
+            .Where(t => t.DeletedAt == null)
+            .Skip(skipCount)
+            .Take(pageSize)
+            .ToArrayAsync();
+    }
+
+    public async Task<Client?> Get(int id) =>
+        await _dbSet.Include(c => c.Founders).FirstOrDefaultAsync(c => c.DeletedAt == null && c.Id == id);
 }

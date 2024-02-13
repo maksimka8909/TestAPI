@@ -4,11 +4,11 @@ namespace TestAPI.Domain.Models;
 
 public class Client : BaseModel
 {
-    public string TaxpayerNumber { get; set; }
+    public string TaxpayerNumber { get; private set; }
 
-    public string Name { get; set; }
+    public string Name { get; private set; }
 
-    public string TypeCode { get; set; }
+    public string TypeCode { get; private set; }
 
     [NotMapped]
     public ClientType Type
@@ -17,7 +17,12 @@ public class Client : BaseModel
         set => TypeCode = value.ToString();
     }
 
-    public List<Founder?> Founders { get; set; } = new List<Founder?>();
+    public List<Founder> Founders { get; set; } = new List<Founder>();
+
+    public void SetName(string name)
+    {
+        Name = name;
+    }
 
     public Client(string taxpayerNumber, string name, ClientType type)
     {

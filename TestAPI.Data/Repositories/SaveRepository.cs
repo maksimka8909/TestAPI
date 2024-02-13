@@ -14,12 +14,11 @@ public class SaveRepository : ISaveRepository
 
     public async Task Save()
     {
-        var now = DateTime.Now;
         foreach (var entityEntry in _database.ChangeTracker.Entries().ToArray())
         {
-            if (entityEntry is { State: EntityState.Added, Entity: IBaseModel createEntity })
+            if (entityEntry.State == EntityState.Added && entityEntry.Entity is IBaseModel createEntity)
             {
-                createEntity.CreatedAt = now;
+                createEntity.SetCreateDate();
             }
         }
 

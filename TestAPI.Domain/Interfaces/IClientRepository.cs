@@ -8,5 +8,5 @@ public interface IClientRepository : IGenericRepository<Client>
 
     public Task RemoveFounder(Client client, Founder founder);
 
-    public Task<Client?> GetUserByTaxpayerNumber(string number);
+    public Task<Client?> GetClientByTaxpayerNumber(string number);
 }

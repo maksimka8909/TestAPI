@@ -10,6 +10,6 @@ public class FounderRepository : GenericRepository<Founder>, IFounderRepository
     {
     }
 
-    public async Task<Founder?> GetUserByTaxpayerNumber(string number) =>
+    public async Task<Founder?> GetFounderByTaxpayerNumber(string number) =>
         await _dbSet.Where(f => f.TaxpayerNumber == number).FirstOrDefaultAsync();
 }

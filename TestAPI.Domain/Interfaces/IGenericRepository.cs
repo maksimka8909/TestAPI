@@ -5,7 +5,7 @@ public interface IGenericRepository<T>
 {
     public Task Add(T item);
 
-    public Task<IReadOnlyList<T>> GetAll();
+    public Task<IReadOnlyList<T>> GetAll(int pageNumber, int pageSize);
 
     public Task<T?> Get(int id);
 }

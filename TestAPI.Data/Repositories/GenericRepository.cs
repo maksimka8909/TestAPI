@@ -16,9 +16,15 @@ public class GenericRepository<T> : IGenericRepository<T>
     public async Task Add(T item) =>
         await _dbSet.AddAsync(item);
 
-    public async Task<IReadOnlyList<T>> GetAll() =>
-        await _dbSet.Where(t => t.DeletedAt == null).ToListAsync();
+    public virtual async Task<IReadOnlyList<T>> GetAll(int pageNumber, int pageSize)
+    {
+        var skipCount = (pageNumber - 1) * pageSize;
+        return await _dbSet.OrderBy(t => t.Id).Where(t => t.DeletedAt == null)
+            .Skip(skipCount)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 
-    public async Task<T?> Get(int id) =>
+    public virtual async Task<T?> Get(int id) =>
         await _dbSet.Where(t => t.DeletedAt == null && t.Id == id).FirstOrDefaultAsync();
 }

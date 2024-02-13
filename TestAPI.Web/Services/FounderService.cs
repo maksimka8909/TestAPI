@@ -1,7 +1,6 @@
 ﻿using TestAPI.Domain.Interfaces;
 using TestAPI.Domain.Models;
 using TestAPI.Domain.UseCases;
-using TestAPI.Validators;
 using TestAPI.ViewModels;
 
 namespace TestAPI.Services;
@@ -9,87 +8,64 @@ namespace TestAPI.Services;
 public class FounderService
 {
     private readonly FounderUseCase _founderUseCase;
-    private readonly FounderCreateValidator _createValidator;
-    private readonly FounderUpdateValidator _updateValidator;
     private readonly ISaveRepository _saveRepository;
 
-    public FounderService(FounderUseCase founderUseCase,
-        FounderCreateValidator createValidator, FounderUpdateValidator updateValidator, ISaveRepository saveRepository)
+    public FounderService(FounderUseCase founderUseCase, ISaveRepository saveRepository)
     {
         _founderUseCase = founderUseCase;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
         _saveRepository = saveRepository;
     }
 
-    public async Task<IReadOnlyList<Message>> Add(FounderCreateInfo founderCreateInfo)
+    public async Task<FounderMainInfo?> Add(FounderCreateInfo founderCreateInfo)
     {
-        var result = await _createValidator.ValidateAsync(founderCreateInfo);
-        if (result.IsValid)
-        {
-            var founder = await _founderUseCase.GetUserByTaxpayerNumber(founderCreateInfo.TaxpayerNumber);
-            if (founder != null)
-                return SendMessage("Учредитель с таким ИНН уже есть");
+        var founder = await _founderUseCase.GetFounderByTaxpayerNumber(founderCreateInfo.TaxpayerNumber);
+        if (founder != null)
+            return null;
+        var newFounder = new Founder(founderCreateInfo.TaxpayerNumber, founderCreateInfo.Fullname);
+        await _founderUseCase.Add(newFounder);
+        await _saveRepository.Save();
 
-            await _founderUseCase.Add(new Founder(founderCreateInfo.TaxpayerNumber, founderCreateInfo.Fullname));
-            await _saveRepository.Save();
-            return SendMessage("Учредитель успешно создан");
-        }
-
-        return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
+        return new FounderMainInfo(newFounder);
     }
 
-    public async Task<IReadOnlyList<Message>> Update(FounderUpdate founder)
+    public async Task<FounderMainInfo?> Update(FounderUpdate founder)
     {
-        var result = await _updateValidator.ValidateAsync(founder);
-        if (result.IsValid)
+        var currentFounder = await _founderUseCase.Get(founder.Id);
+        if (currentFounder == null)
         {
-            var currentFounder = await _founderUseCase.Get(founder.Id);
-            if (currentFounder == null)
-            {
-                return SendMessage("Учредитель не найден");
-            }
-
-            currentFounder.Fullname = founder.Fullname;
-            currentFounder.UpdatedAt = DateTime.Now;
-            await _saveRepository.Save();
-            return SendMessage("Учредитель успешно обновлен");
+            return null;
         }
 
-        return result.Errors.Select(error => new Message(error.ErrorMessage)).ToList();
+        currentFounder.SetFullName(founder.Fullname);
+        currentFounder.SetUpdateDate();
+        await _saveRepository.Save();
+
+        return new FounderMainInfo(currentFounder);
     }
 
-    public async Task<IReadOnlyList<Message>> Delete(int id)
+    public async Task<FounderMainInfo?> Remove(int id)
     {
         var founder = await _founderUseCase.Get(id);
         if (founder == null)
         {
-           return SendMessage("Учредитель не найден");
+            return null;
         }
 
-        founder.DeletedAt = DateTime.Now;
+        founder.SetDeleteDate();
         await _saveRepository.Save();
-        return SendMessage("Учредитель успешно удален");
+        return new FounderMainInfo(founder);
     }
 
-    public async Task<IReadOnlyList<FounderMainInfo>> GetAll()
+    public async Task<IReadOnlyList<FounderMainInfo>> GetAll(int pageNumber, int pageSize)
     {
-        IReadOnlyList<Founder?> founders = await _founderUseCase.GetAll();
+        IReadOnlyList<Founder?> founders = await _founderUseCase.GetAll(pageNumber, pageSize);
         var viewFounders = founders.Select(x => new FounderMainInfo(x)).ToArray();
         return viewFounders;
     }
 
-    public async Task<FounderMainInfo> Get(int id)
+    public async Task<FounderMainInfo?> Get(int id)
     {
         var founder = await _founderUseCase.Get(id);
-        if (founder == null)
-        {
-            return new FounderMainInfo();
-        }
-
-        return new FounderMainInfo(founder);
+        return founder == null ? null : new FounderMainInfo(founder);
     }
-
-    private List<Message> SendMessage(string message) =>
-        new List<Message>() { new Message(message) };
 }

@@ -7,7 +7,7 @@ public class GenericUseCase<T>
 {
     private readonly IGenericRepository<T> _genericRepository;
 
-    public GenericUseCase(IGenericRepository<T> genericRepository)
+    protected GenericUseCase(IGenericRepository<T> genericRepository)
     {
         _genericRepository = genericRepository;
     }
@@ -15,10 +15,9 @@ public class GenericUseCase<T>
     public async Task Add(T item) =>
         await _genericRepository.Add(item);
 
-    public async Task<IReadOnlyList<T>> GetAll() =>
-        await _genericRepository.GetAll();
+    public async Task<IReadOnlyList<T>> GetAll(int pageNumber, int pageSize) =>
+        await _genericRepository.GetAll(pageNumber, pageSize);
 
     public async Task<T?> Get(int id) =>
         await _genericRepository.Get(id);
-
 }

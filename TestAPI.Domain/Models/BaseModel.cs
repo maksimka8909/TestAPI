@@ -4,15 +4,26 @@ namespace TestAPI.Domain.Models;
 
 public abstract class BaseModel : IBaseModel
 {
-    public int Id { get; }
+    public int Id { get; private set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; private set; }
 
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; private set; }
 
-    public DateTime? DeletedAt { get; set; }
+    public DateTime? DeletedAt { get; private set; }
 
-    protected BaseModel()
+    public void SetCreateDate()
     {
+        CreatedAt = DateTime.Now;
+    }
+
+    public void SetUpdateDate()
+    {
+        UpdatedAt = DateTime.Now;
+    }
+
+    public void SetDeleteDate()
+    {
+        DeletedAt = DateTime.Now;
     }
 }
