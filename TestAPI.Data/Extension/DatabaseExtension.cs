@@ -41,7 +41,7 @@ public static class DatabaseExtension
 
         serviceCollection.AddDbContext<DatabaseContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly("TestAPI.Web")));
+                b => b.MigrationsAssembly("TestAPI.Data")));
 
         return serviceCollection;
     }
