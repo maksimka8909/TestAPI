@@ -14,7 +14,7 @@ public class SaveRepository : ISaveRepository
 
     public async Task Save()
     {
-        foreach (var entityEntry in _database.ChangeTracker.Entries())
+        foreach (var entityEntry in _database.ChangeTracker.Entries().ToArray())
         {
             if (entityEntry.State == EntityState.Added && entityEntry.Entity is IBaseModel createEntity)
             {
