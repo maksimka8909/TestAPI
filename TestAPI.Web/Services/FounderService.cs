@@ -37,7 +37,6 @@ public class FounderService
         }
 
         currentFounder.SetFullName(founder.Fullname);
-        currentFounder.SetUpdateDate();
         await _saveRepository.Save();
 
         return new FounderMainInfo(currentFounder);
@@ -51,7 +50,7 @@ public class FounderService
             return null;
         }
 
-        founder.SetDeleteDate();
+        _founderUseCase.Remove(founder);
         await _saveRepository.Save();
         return new FounderMainInfo(founder);
     }

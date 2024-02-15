@@ -20,4 +20,9 @@ public class GenericUseCase<T>
 
     public async Task<T?> Get(int id) =>
         await _genericRepository.Get(id);
+
+    public void Remove(T item)
+    {
+        _genericRepository.Remove(item);
+    }
 }

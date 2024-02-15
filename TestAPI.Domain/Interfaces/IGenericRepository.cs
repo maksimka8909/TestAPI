@@ -8,4 +8,6 @@ public interface IGenericRepository<T>
     public Task<IReadOnlyList<T>> GetAll(int pageNumber, int pageSize);
 
     public Task<T?> Get(int id);
+
+    public void Remove(T item);
 }

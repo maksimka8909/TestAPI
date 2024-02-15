@@ -40,7 +40,6 @@ public class ClientService
         }
 
         currentClient.SetName(client.Name);
-        currentClient.SetUpdateDate();
         await _saveRepository.Save();
 
         return new ClientMainInfo(currentClient);
@@ -54,7 +53,7 @@ public class ClientService
             return null;
         }
 
-        client.SetDeleteDate();
+        _clientUseCase.Remove(client);
         await _saveRepository.Save();
         return new ClientMainInfo(client);
     }

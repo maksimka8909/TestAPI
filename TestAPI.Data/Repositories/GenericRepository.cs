@@ -27,4 +27,9 @@ public class GenericRepository<T> : IGenericRepository<T>
 
     public virtual async Task<T?> Get(int id) =>
         await _dbSet.Where(t => t.DeletedAt == null && t.Id == id).FirstOrDefaultAsync();
+
+    public void Remove(T item)
+    {
+        _dbSet.Remove(item);
+    }
 }

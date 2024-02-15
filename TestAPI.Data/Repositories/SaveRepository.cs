@@ -14,11 +14,23 @@ public class SaveRepository : ISaveRepository
 
     public async Task Save()
     {
-        foreach (var entityEntry in _database.ChangeTracker.Entries().ToArray())
+        var entities = _database.ChangeTracker.Entries().ToArray();
+        foreach (var entityEntry in entities)
         {
             if (entityEntry.State == EntityState.Added && entityEntry.Entity is IBaseModel createEntity)
             {
                 createEntity.SetCreateDate();
+            }
+
+            if (entityEntry.State == EntityState.Modified && entityEntry.Entity is IBaseModel updateEntity)
+            {
+                updateEntity.SetUpdateDate();
+            }
+
+            if (entityEntry.State == EntityState.Deleted && entityEntry.Entity is IBaseModel deleteEntity)
+            {
+                deleteEntity.SetDeleteDate();
+                entityEntry.State = EntityState.Modified;
             }
         }
 
